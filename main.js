@@ -2,6 +2,8 @@
 const express = require('express');
 const { ethers } = require('ethers');
 const { parseAbi} = require('viem');
+const cors = require('cors');
+
 
 require('dotenv').config(); // Load environment variables from .env file
 
@@ -35,6 +37,8 @@ const CONTRACT_ABI = [
 
 // Initialize Express app
 const app = express();
+app.use(cors());
+
 
 // Initialize provider and wallet
 const provider = new ethers.JsonRpcProvider(PROVIDER_URL);
