@@ -24,11 +24,11 @@ function calcStudentSaltHash(studentId, salt){
     return ethers.keccak256(ethers.toUtf8Bytes(sumString));
 }
 
-// Define configuration
-const PORT = 3000;
+// Define configuration 
+const PORT = 4000;
 const PROVIDER_URL = process.env.PROVIDER_URL; // e.g., Infura URL or Alchemy URL
 const PRIVATE_KEY = process.env.PRIVATE_KEY; // Private key of the sender account
-const CONTRACT_ADDRESS = "0x6F4064E02E17cA3536DB73a42Bf61Df4D582C8e7"; // votingBox
+const CONTRACT_ADDRESS = process.env.VOTINGBOX_CONTRACT_ADDRESS; // votingBox
 const CONTRACT_ABI = [
   'function studentSaltTable(uint256) public view returns (uint256)',
   'function setSalt(uint256[] memory studentNumberList, uint256[] memory saltHash) external',
@@ -38,7 +38,7 @@ const CONTRACT_ABI = [
 // Initialize Express app
 const app = express();
 app.use(cors());
-
+// http://localhost:4000/allocateAddress?code=12345
 
 // Initialize provider and wallet
 const provider = new ethers.JsonRpcProvider(PROVIDER_URL);
