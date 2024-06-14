@@ -68,7 +68,7 @@ app.post('/finalVote', async (req, res) => {
     const abi = parseAbi(TORNADO_ABI);
     const contract = new ethers.Contract(TORNADO_ADDRESS, abi, wallet);
 
-    const { tokenAddress, candidateAddress } = req.body;
+    const { callInputs, tokenAddress, candidateAddress } = req.body;
 
     // const tx = await tornado.connect(layer).withdraw(...callInputs, token.target, candidate.address);
 
