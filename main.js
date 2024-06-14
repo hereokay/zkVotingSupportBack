@@ -8,6 +8,8 @@ const cors = require('cors');
 require('dotenv').config(); // Load environment variables from .env file
 
 
+
+
 const {
     fetchUserList,
     putUserSalt,
@@ -37,13 +39,19 @@ const VOTINGBOX_ABI = [
 
 
 const TORNADO_ADDRESS = process.env.TORNADO_ADDRESS;
-const TORNADO_ABI = [
-  
+const TORNADO_ABI =[
+  'function deposit(uint256 _commitment, address tokenAddress) external',
+  `function withdraw(uint[2] memory a, uint[2][2] memory b, uint[2] memory c, uint[2] memory input, address tokenAddress, address candidate) external`,
+  `event Deposit(uint256 root, uint256[10] hashPairings, uint8[10] pairDirection)`,
+  `event Withdrawal(address to, uint256 nullifierHash)`,
+  'function check(address, address) public view returns(bool)',
 ]
 
 // Initialize Express app
 const app = express();
 app.use(cors());
+app.use(express.json());
+
 // http://localhost:4000/allocateAddress?code=12345
 
 // Initialize provider and wallet
@@ -60,11 +68,16 @@ app.post('/finalVote', async (req, res) => {
     const abi = parseAbi(TORNADO_ABI);
     const contract = new ethers.Contract(TORNADO_ADDRESS, abi, wallet);
 
-    const { callInputs, tokenAddress, candidateAddress } = req.body;
+    const { tokenAddress, candidateAddress } = req.body;
 
     // const tx = await tornado.connect(layer).withdraw(...callInputs, token.target, candidate.address);
 
-    const txResponse = await contract.withdraw(...callInputs, tokenAddress, candidateAddress);
+    const txResponse = await contract.withdraw(
+      [BigInt(0),BigInt(0)],
+      [[BigInt(0),BigInt(0)],[BigInt(0),BigInt(0)],],
+      [BigInt(0),BigInt(0)],
+      [BigInt(0),BigInt(0)],
+      tokenAddress, candidateAddress);
 
     // Wait for the transaction to be mined
     const receipt = await txResponse.wait();
